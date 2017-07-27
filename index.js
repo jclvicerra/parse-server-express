@@ -6,6 +6,7 @@ const errorHandler = require('errorhandler')
 const ParseServer = require('parse-server').ParseServer;
 const path = require('path');
 const http = require('http')
+const liveQueryJson = require('./liveQuery.json');
 
 const databaseUri = process.env.DATABASE_URI || process.env.MONGODB_URI;
 
@@ -20,7 +21,7 @@ const parseServerApi = new ParseServer({
   masterKey: process.env.MASTER_KEY || '', //Add your master key here. Keep it secret!
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
   liveQuery: {
-    classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
+    classNames: liveQueryJson // List of classes to support for query subscriptions
   }
 });
 
