@@ -22,7 +22,44 @@ const parseServerApi = new ParseServer({
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
   liveQuery: {
     classNames: liveQueryJson // List of classes to support for query subscriptions
-  }
+  },
+  verifyUserEmails: true,
+  emailVerifyTokenValidityDuration: 2 * 60 * 60, // in seconds (2 hours = 7200 seconds)
+  preventLoginWithUnverifiedEmail: false, // defaults to false
+  appName: process.env.APP_NAME,
+
+  emailAdapter: {
+    module: 'parse-server-simple-mailgun-adapter',
+    options: {
+      // The address that your emails come from
+      fromAddress: process.env.MAILGUN_FROM_ADDRESS,
+      // Your domain from mailgun.com
+      domain: process.env.MAILGUN_DOMAIN,
+      // Your API key from mailgun.com
+      apiKey: process.env.MAILGUN_API_KEY,
+      // templates: {
+      //   passwordResetEmail: {
+      //     subject: 'Reset your password',
+      //     pathPlainText: resolve(__dirname, 'path/to/templates/password_reset_email.txt'),
+      //     pathHtml: resolve(__dirname, 'path/to/templates/password_reset_email.html'),
+      //     callback: (user) => { return { firstName: user.get('firstName') }}
+      //     // Now you can use {{firstName}} in your templates 
+      //   },
+      //   verificationEmail: {
+      //     subject: 'Confirm your account',
+      //     pathPlainText: resolve(__dirname, 'path/to/templates/verification_email.txt'),
+      //     pathHtml: resolve(__dirname, 'path/to/templates/verification_email.html'),
+      //     callback: (user) => { return { firstName: user.get('firstName') }}
+      //     // Now you can use {{firstName}} in your templates 
+      //   },
+      //   customEmailAlert: {
+      //     subject: 'Urgent notification!',
+      //     pathPlainText: resolve(__dirname, 'path/to/templates/custom_alert.txt'),
+      //     pathHtml: resolve(__dirname, 'path/to/templates/custom_alert.html'),
+      //   }
+      // }
+    },
+  },
 });
 
 const app = express();

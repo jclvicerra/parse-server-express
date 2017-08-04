@@ -20,6 +20,7 @@
     "express": "^4.15.3",
     "morgan": "^1.8.2",
     "parse": "^1.10.0",
-    "parse-server": "^2.5.3"
+    "parse-server": "^2.5.3",
+    "parse-server-mailgun": "^2.4.5"
   }
 }
