@@ -14,20 +14,23 @@ if (!databaseUri) {
   console.log('DATABASE_URI not specified, falling back to localhost.');
 }
 
+const port = process.env.PORT || 1337;
+const appName = process.env.APP_NAME || 'parse-server-express';
+
 const parseServerApi = new ParseServer({
   databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
   cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.js',
   appId: process.env.APP_ID || 'myAppId',
   masterKey: process.env.MASTER_KEY || '', //Add your master key here. Keep it secret!
-  serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
+  serverURL: process.env.SERVER_URL || `http://localhost:${port}/parse`,  // Don't forget to change to https if needed
   liveQuery: {
     classNames: liveQueryJson // List of classes to support for query subscriptions
   },
   verifyUserEmails: true,
   emailVerifyTokenValidityDuration: 2 * 60 * 60, // in seconds (2 hours = 7200 seconds)
   preventLoginWithUnverifiedEmail: false, // defaults to false
-  appName: process.env.APP_NAME,
-
+  appName: appName,
+  publicServerURL: process.env.SERVER_URL || `http://localhost:${port}/parse`,
   emailAdapter: {
     module: 'parse-server-simple-mailgun-adapter',
     options: {
@@ -64,7 +67,7 @@ const parseServerApi = new ParseServer({
 
 const app = express();
 
-app.set('port', process.env.PORT || 1337);
+app.set('port', port);
 app.use(logger('dev'));
 
 // Serve the Parse API on the /parse URL prefix
@@ -81,9 +84,10 @@ if (app.get('env') === 'development') {
   app.use(errorHandler())
 }
 
-const httpServer = http.createServer(app)
+const httpServer = http.createServer(app);
+
 httpServer.listen(app.get('port'), function() {
-    console.log('parse-server-example running on port ' + app.get('port') + '.');
+    console.log(`parse server ${appName} running on port ${app.get('port')}.`);
 });
 
 // This will enable the Live Query real-time server
